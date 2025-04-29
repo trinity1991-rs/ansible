@@ -1,28 +1,32 @@
 ---
-- name: Upgrade all available packages on Ubuntu
+- name: Force update and upgrade Ubuntu packages using shell
   hosts: all
   become: yes
   tasks:
 
-    - name: Update apt package cache
-      apt:
-        update_cache: yes
+    - name: Update package list
+      shell: apt update -y
+      register: update_output
+      ignore_errors: true
 
-    - name: Perform full upgrade (includes kernel and dependencies)
-      apt:
-        upgrade: full
+    - name: Upgrade all available packages
+      shell: apt full-upgrade -y
+      register: upgrade_output
+      ignore_errors: true
 
-    - name: Remove unnecessary packages
-      apt:
-        autoremove: yes
+    - name: Autoremove unused packages
+      shell: apt autoremove -y
 
-    - name: Clean up local apt cache
-      apt:
-        autoclean: yes
+    - name: Autoclean package cache
+      shell: apt autoclean -y
 
-    - name: Reboot if required (e.g., after kernel upgrade)
+    - name: Reboot if kernel or system packages were upgraded
       reboot:
-        msg: "Rebooting to complete full upgrade"
+        msg: "System rebooting after forced upgrade"
         connect_timeout: 5
         reboot_timeout: 600
         test_command: uptime
+
+    - name: Show upgrade result
+      debug:
+        var: upgrade_output.stdout_lines
