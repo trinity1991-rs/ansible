@@ -1,22 +1,12 @@
 ---
-- name: Fully update and upgrade Ubuntu
+- name: List upgradable packages on Ubuntu
   hosts: all
   become: yes
   tasks:
+    - name: Show list of upgradable packages
+      shell: apt list --upgradable
+      register: upgrade_output
 
-    - name: Ensure the apt cache is updated
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600  # Only refresh if older than 1 hour
-
-    - name: Upgrade all packages (equivalent to apt full-upgrade)
-      apt:
-        upgrade: full
-
-    - name: Autoremove unused packages
-      apt:
-        autoremove: yes
-
-    - name: Clean local repository of retrieved package files
-      apt:
-        autoclean: yes
+    - name: Print list of upgradable packages
+      debug:
+        var: upgrade_output.stdout_lines
