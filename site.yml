@@ -1,8 +1,9 @@
 ---
-- hosts: linux_servers
-  become: true
+- name: Update Linux systems
+  hosts: all
+  become: yes
   tasks:
-    - name: print OS info
-      ansible.builtin.package:
-        name: apache2
-      
+    - name: Update apt cache (Debian/Ubuntu)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
