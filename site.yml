@@ -1,9 +1,11 @@
 ---
-- name: Update Linux systems
+- name: Update and upgrade Linux packages
   hosts: all
   become: yes
   tasks:
-    - name: Update apt cache (Debian/Ubuntu)
+
+    - name: Update and upgrade packages on Debian/Ubuntu
       apt:
         update_cache: yes
+        upgrade: dist
       when: ansible_os_family == "Debian"
