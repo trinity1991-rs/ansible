@@ -7,18 +7,3 @@
     - name: Update apt package list
       apt:
         update_cache: yes
-
-    - name: Install only security updates
-      shell: |
-        apt-get -s upgrade | \
-        grep "^Inst" | \
-        grep -i security | \
-        awk '{print $2}' | \
-        xargs apt-get install -y
-      args:
-        warn: false
-      register: security_upgrade_result
-
-    - name: Show installed security updates
-      debug:
-        var: security_upgrade_result.stdout_lines
