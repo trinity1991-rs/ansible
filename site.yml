@@ -1,32 +1,24 @@
 ---
-- name: Force update and upgrade Ubuntu packages using shell
+- name: Install Ubuntu security updates only (no reboot)
   hosts: all
   become: yes
   tasks:
 
-    - name: Update package list
-      shell: apt update -y
-      register: update_output
-      ignore_errors: true
+    - name: Update apt package list
+      apt:
+        update_cache: yes
 
-    - name: Upgrade all available packages
-      shell: apt full-upgrade -y
-      register: upgrade_output
-      ignore_errors: true
+    - name: Install only security updates
+      shell: |
+        apt-get -s upgrade | \
+        grep "^Inst" | \
+        grep -i security | \
+        awk '{print $2}' | \
+        xargs apt-get install -y
+      args:
+        warn: false
+      register: security_upgrade_result
 
-    - name: Autoremove unused packages
-      shell: apt autoremove -y
-
-    - name: Autoclean package cache
-      shell: apt autoclean -y
-
-    - name: Reboot if kernel or system packages were upgraded
-      reboot:
-        msg: "System rebooting after forced upgrade"
-        connect_timeout: 5
-        reboot_timeout: 600
-        test_command: uptime
-
-    - name: Show upgrade result
+    - name: Show installed security updates
       debug:
-        var: upgrade_output.stdout_lines
+        var: security_upgrade_result.stdout_lines
