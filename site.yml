@@ -1,11 +1,28 @@
 ---
-- name: Update and upgrade Linux packages
+- name: Update and upgrade Ubuntu system
   hosts: all
   become: yes
   tasks:
 
-    - name: Update and upgrade packages on Debian/Ubuntu
+    - name: Update apt package cache
       apt:
         update_cache: yes
+
+    - name: Upgrade all packages to latest version
+      apt:
         upgrade: dist
-      when: ansible_os_family == "Debian"
+
+    - name: Autoremove unnecessary packages
+      apt:
+        autoremove: yes
+
+    - name: Clean up retrieved package files
+      apt:
+        autoclean: yes
+
+    - name: Reboot the server if required
+      reboot:
+        msg: "Rebooting to apply system upgrades"
+        connect_timeout: 5
+        reboot_timeout: 600
+        test_command: uptime
