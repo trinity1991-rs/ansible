@@ -1,28 +1,22 @@
 ---
-- name: Update and upgrade Ubuntu system
+- name: Fully update and upgrade Ubuntu
   hosts: all
   become: yes
   tasks:
 
-    - name: Update apt package cache
+    - name: Ensure the apt cache is updated
       apt:
         update_cache: yes
+        cache_valid_time: 3600  # Only refresh if older than 1 hour
 
-    - name: Upgrade all packages to latest version
+    - name: Upgrade all packages (equivalent to apt full-upgrade)
       apt:
-        upgrade: dist
+        upgrade: full
 
-    - name: Autoremove unnecessary packages
+    - name: Autoremove unused packages
       apt:
         autoremove: yes
 
-    - name: Clean up retrieved package files
+    - name: Clean local repository of retrieved package files
       apt:
         autoclean: yes
-
-    - name: Reboot the server if required
-      reboot:
-        msg: "Rebooting to apply system upgrades"
-        connect_timeout: 5
-        reboot_timeout: 600
-        test_command: uptime
