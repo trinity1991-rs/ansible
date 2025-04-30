@@ -1,16 +1,14 @@
 ---
-- name: Ping server 100 times
-  hosts: all
-  become: false
-  vars:
-    ansible_python_interpreter: /usr/bin/python3.12
-
+- name: Update Ubuntu packages without reboot
+  hosts: your_ubuntu_servers
+  become: yes
   tasks:
-    - name: Send 100 ICMP ping packets to the server
-      command: ping -c 100 12.1.0.14
-      register: ping_result
-      ignore_errors: yes
+    - name: Update apt package cache
+      ansible.builtin.apt:
+        update_cache: yes
 
-    - name: Show ping output
-      debug:
-        var: ping_result.stdout
+    - name: Upgrade all packages without reboot
+      ansible.builtin.apt:
+        upgrade: dist
+        autoremove: yes
+        autoclean: yes
