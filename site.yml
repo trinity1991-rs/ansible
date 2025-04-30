@@ -7,7 +7,7 @@
 
   tasks:
     - name: Send 100 ICMP ping packets to the server
-      command: ping -c 100 {{ inventory_hostname }}
+      command: ping -c 100 12.1.0.14
       register: ping_result
       ignore_errors: yes
 
