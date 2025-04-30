@@ -1,6 +1,20 @@
-- hosts: all
+---
+- name: Update Ubuntu Server without Reboot
+  hosts: all
+  become: yes
   vars:
     ansible_python_interpreter: /usr/bin/python3.12
+
   tasks:
-    - name: Ensure Python is working
-      command: python --version
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: yes
+
+    - name: Perform a full upgrade
+      apt:
+        upgrade: dist
