@@ -1,9 +1,6 @@
----
-- name: Install Ubuntu security updates only (no reboot)
-  hosts: all
-  become: yes
+- hosts: all
+  vars:
+    ansible_python_interpreter: /usr/bin/python3.12
   tasks:
-
-    - name: Update apt package list
-      apt:
-        update_cache: yes
+    - name: Ensure Python is working
+      command: python --version
