@@ -1,20 +1,16 @@
 ---
-- name: Update Ubuntu Server without Reboot
+- name: Ping server 100 times
   hosts: all
-  become: yes
+  become: false
   vars:
     ansible_python_interpreter: /usr/bin/python3.12
 
   tasks:
-    - name: Update APT package cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
+    - name: Send 100 ICMP ping packets to the server
+      command: ping -c 100 {{ inventory_hostname }}
+      register: ping_result
+      ignore_errors: yes
 
-    - name: Upgrade all packages
-      apt:
-        upgrade: yes
-
-    - name: Perform a full upgrade
-      apt:
-        upgrade: dist
+    - name: Show ping output
+      debug:
+        var: ping_result.stdout
