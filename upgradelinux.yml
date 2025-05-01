@@ -1,0 +1,12 @@
+---
+- name: Upgrade Debian-based servers (no reboot)
+  hosts: debian_servers
+  become: yes
+  tasks:
+    - name: Update APT package index
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Perform full system upgrade
+      ansible.builtin.apt:
+        upgrade: full
