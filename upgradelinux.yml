@@ -1,6 +1,6 @@
 ---
 - name: Upgrade Debian-based servers (no reboot)
-  hosts: debian_servers
+  hosts: all
   become: yes
   tasks:
     - name: Update APT package index
