@@ -1,12 +1,23 @@
 ---
-- name: Upgrade Debian-based servers (no reboot)
-  hosts: all
+- name: List and perform upgrades on Debian servers (no reboot)
+  hosts: debian_servers
   become: yes
+  gather_facts: no
+
   tasks:
-    - name: Update APT package index
+    - name: List available package upgrades
+      ansible.builtin.command: apt list --upgradable
+      register: upgrade_list
+      changed_when: false
+
+    - name: Show available upgrades
+      ansible.builtin.debug:
+        var: upgrade_list.stdout_lines
+
+    - name: Update APT cache
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Perform full system upgrade
+    - name: Upgrade packages
       ansible.builtin.apt:
         upgrade: full
