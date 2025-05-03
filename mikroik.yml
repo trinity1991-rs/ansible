@@ -1,7 +1,7 @@
 ---
 - name: Ping MikroTik router
   hosts: mikrotik
-  gather_facts: no
+  gather_facts: yes
   tasks:
     - name: Ping 8.8.8.8 from MikroTik
       raw: "/ping 8.8.8.8 count=4"
