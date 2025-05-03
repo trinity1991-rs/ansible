@@ -1,12 +1,12 @@
 ---
-- name: Ping MikroTik router
+- name: Ping from MikroTik router
   hosts: mikrotik
-  gather_facts: yes
+  gather_facts: no  # MUST be off
   tasks:
-    - name: Ping 8.8.8.8 from MikroTik
-      raw: "/ping 8.8.8.8 count=4"
-      register: ping_output
+    - name: Run ping command via raw
+      raw: "/tool ping 8.8.8.8 count=4"
+      register: result
 
-    - name: Display ping results
+    - name: Show ping result
       debug:
-        var: ping_output.stdout
+        var: result.stdout
