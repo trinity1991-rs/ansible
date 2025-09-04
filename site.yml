@@ -1,11 +1,12 @@
 ---
 - name: Update and upgrade Ubuntu servers
-  hosts: ALL
+  hosts: servers   # <-- match the group name in your inventory
   become: yes
   tasks:
     - name: Update apt cache
       apt:
         update_cache: yes
+        lock_timeout: 300
       become: yes
 
     - name: Upgrade all packages
