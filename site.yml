@@ -1,18 +1,15 @@
 ---
-- hosts: all
-  become: true
-  pre_tasks:
+- name: Update and upgrade Ubuntu servers
+  hosts: servers
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
 
-  - name: install updates for fedora
-    tags: always
-    ansible.builtin.dnf:
-      update_only: yes
-      update_cache: yes
-    when: ansible_distribution == "Fedora"
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+        autoremove: yes
+        autoclean: yes
 
-  - name: install updates for Ubuntu
-    tags: always
-    ansible.builtin.apt:
-      upgrade: dist
-      update_cache: yes
-    when: ansible_distribution == "Ubuntu"
