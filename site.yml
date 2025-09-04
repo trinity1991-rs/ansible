@@ -1,7 +1,7 @@
 ---
 - name: Update and upgrade Ubuntu servers
   hosts: SERVERS 
-  become: yes
+  become: all
   tasks:
     - name: Update apt cache
       apt:
