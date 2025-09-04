@@ -1,6 +1,6 @@
 ---
 - name: Update and upgrade Ubuntu servers
-  hosts: ALL 
+  hosts: ALL
   become: yes
   tasks:
     - name: Update apt cache
@@ -14,3 +14,4 @@
         autoremove: yes
         autoclean: yes
       become: yes
+
