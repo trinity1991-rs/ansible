@@ -1,6 +1,6 @@
 ---
 - name: Update and upgrade Ubuntu servers
-  hosts: servers   # <-- match the group name in your inventory
+  hosts: all   # <-- match the group name in your inventory
   become: yes
   tasks:
     - name: Update apt cache
