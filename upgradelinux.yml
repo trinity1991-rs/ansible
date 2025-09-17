@@ -6,7 +6,7 @@
 
   tasks:
     - name: List available package upgrades
-      ansible.builtin.command: apt list --upgradable
+      ansible.builtin.shell: apt list --upgradable 2>/dev/null | tail -n +2
       register: upgrade_list
       changed_when: false
 
@@ -17,7 +17,9 @@
     - name: Update APT cache
       ansible.builtin.apt:
         update_cache: yes
+        cache_valid_time: 3600   # don’t refresh if cache is recent (optional)
 
-    - name: Upgrade packages
+    - name: Perform full upgrade
       ansible.builtin.apt:
-        upgrade: full
+        upgrade: dist
+        autoremove: yes          # remove unused deps (optional)
