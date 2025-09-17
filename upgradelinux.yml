@@ -1,11 +1,12 @@
 ---
-    - name: Update apt cache
-      apt:
-      update_cache: yes
-      become: true
-
-
+- name: Update and upgrade Debian/Ubuntu servers
+  hosts: all
+  become: true
   tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
     - name: List available package upgrades
       ansible.builtin.shell: apt list --upgradable 2>/dev/null | tail -n +2
       register: upgrade_list
@@ -15,12 +16,12 @@
       ansible.builtin.debug:
         var: upgrade_list.stdout_lines
 
-    - name: Update APT cache
+    - name: Update APT cache (with valid time)
       ansible.builtin.apt:
         update_cache: yes
-        cache_valid_time: 3600   # don’t refresh if cache is recent (optional)
+        cache_valid_time: 3600   # skip refresh if recent
 
     - name: Perform full upgrade
       ansible.builtin.apt:
         upgrade: dist
-        autoremove: yes          # remove unused deps (optional)
+        autoremove: yes          # cleanup unused dependencies
