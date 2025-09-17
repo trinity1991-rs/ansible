@@ -1,8 +1,9 @@
 ---
-- name: List and perform upgrades on Debian servers (no reboot)
-  hosts: all
+- name: Update apt cache
+  apt:
+    update_cache: yes
   become: true
-  gather_facts: yes
+
 
   tasks:
     - name: List available package upgrades
