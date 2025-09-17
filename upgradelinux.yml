@@ -1,7 +1,7 @@
 ---
 - name: List and perform upgrades on Debian servers (no reboot)
   hosts: all
-  become: yes
+  become: true
   gather_facts: yes
 
   tasks:
