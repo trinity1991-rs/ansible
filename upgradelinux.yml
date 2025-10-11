@@ -1,27 +1,29 @@
----
-- name: Update and upgrade Debian/Ubuntu servers
-  hosts: all
-  become: true
+- hosts: "{{ hosts }}"
+
+  become: yes
   tasks:
-    - name: Update apt cache
-      ansible.builtin.apt:
+    # Upgrade packages
+    - name: upgrade apt packages
+      become: true
+      apt:
+        upgrade: yes
         update_cache: yes
 
-    - name: List available package upgrades
-      ansible.builtin.shell: apt list --upgradable 2>/dev/null | tail -n +2
-      register: upgrade_list
-      changed_when: false
+    # Check if reboot is required
+    - name: check if system reboot is required
+      become: true
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required
 
-    - name: Show available upgrades
-      ansible.builtin.debug:
-        var: upgrade_list.stdout_lines
-
-    - name: Update APT cache (with valid time)
-      ansible.builtin.apt:
-        update_cache: yes
-        cache_valid_time: 3600   # skip refresh if recent
-
-    - name: Perform full upgrade
-      ansible.builtin.apt:
-        upgrade: dist
-        autoremove: yes
+    # Send Discord message when reboot is required
+    - name: Send Discord message
+      uri:
+        url: "{{ discord_webhook_url }}"
+        method: POST
+        body_format: json
+        body: '{"content": "Reboot required on {{ inventory_hostname }}"}'
+        headers:
+          Content-Type: application/json
+        status_code: 204
+      when: reboot_required.stat.exists
