@@ -24,4 +24,4 @@
     - name: Perform full upgrade
       ansible.builtin.apt:
         upgrade: dist
-        autoremove: yes          # cleanup unused dependencies
+        autoremove: yes
